@@ -1,0 +1,56 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eden
+id: eden_incident.eden_incident.default
+targetEntityType: eden_incident
+bundle: eden_incident
+mode: default
+content:
+  location:
+    type: eden_location_default
+    label: inline
+    settings: {  }
+    weight: -15
+    third_party_settings: {  }
+  title:
+    type: string
+    label: inline
+    settings:
+      link_to_entity: false
+    weight: -50
+    third_party_settings: {  }
+  case_number:
+    type: string
+    label: inline
+    settings:
+      link_to_entity: false
+    weight: -45
+    third_party_settings: {  }
+  date_of_incident:
+    type: datetime_default
+    label: inline
+    settings:
+      format_type: custom
+      date_format: 'Y-m-d'
+    weight: -40
+    third_party_settings: {  }
+  filing_date:
+    type: datetime_default
+    label: inline
+    settings:
+      format_type: custom
+      date_format: 'Y-m-d'
+    weight: -35
+    third_party_settings: {  }
+  account_of_incident:
+    type: text_default
+    label: hidden
+    settings: {  }
+    weight: -30
+    third_party_settings: {  }
+hidden:
+  created: true
+  changed: true
+  uid: true 

@@ -1,0 +1,84 @@
+eden.admin:
+  route_name: eden.admin
+  base_route: system.admin_content
+  title: 'Eden'
+
+entity.eden_incident.collection:
+  route_name: entity.eden_incident.collection
+  base_route: eden.admin
+  title: 'Incidents'
+  weight: 1
+
+entity.eden_victim.collection:
+  route_name: entity.eden_victim.collection
+  base_route: eden.admin
+  title: 'Victims'
+  weight: 2
+
+entity.eden_violation.collection:
+  route_name: entity.eden_violation.collection
+  base_route: eden.admin
+  title: 'Violations'
+  weight: 3
+
+entity.eden_sector.collection:
+  route_name: entity.eden_sector.collection
+  base_route: eden.admin
+  title: 'Sectors'
+  weight: 4
+
+entity.eden_perpetrator.collection:
+  route_name: entity.eden_perpetrator.collection
+  base_route: eden.admin
+  title: 'Perpetrators'
+  weight: 5
+
+entity.eden_location.collection:
+  route_name: entity.eden_location.collection
+  base_route: eden.admin
+  title: 'Locations'
+  weight: 6
+
+entity.eden_incident.canonical:
+  route_name: entity.eden_incident.canonical
+  base_route: entity.eden_incident.canonical
+  title: 'View'
+
+entity.eden_incident.edit_form:
+  route_name: entity.eden_incident.edit_form
+  base_route: entity.eden_incident.canonical
+  title: 'Edit'
+
+entity.eden_incident.delete_form:
+  route_name: entity.eden_incident.delete_form
+  base_route: entity.eden_incident.canonical
+  title: 'Delete'
+  weight: 10
+
+entity.eden_incident.manage_victims:
+  route_name: entity.eden_incident.add_victim
+  base_route: entity.eden_incident.canonical
+  title: 'Manage Victims'
+  weight: 5
+
+entity.eden_incident.manage_perpetrators:
+  route_name: entity.eden_incident.add_perpetrator
+  base_route: entity.eden_incident.canonical
+  title: 'Manage Perpetrators'
+  weight: 6
+
+entity.eden_location.canonical:
+  route_name: entity.eden_location.canonical
+  base_route: entity.eden_location.canonical
+  title: 'View'
+
+entity.eden_location.edit_form:
+  route_name: entity.eden_location.edit_form
+  base_route: entity.eden_location.canonical
+  title: 'Edit'
+
+entity.eden_location.delete_form:
+  route_name: entity.eden_location.delete_form
+  base_route: entity.eden_location.canonical
+  title: 'Delete'
+  weight: 10 

@@ -1,0 +1,75 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display an incident entity.
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content.
+ * - attributes: HTML attributes for the container element.
+ * - title: The title of the incident.
+ * - case_number: The case number.
+ * - date_of_incident: The date when the incident occurred.
+ * - filing_date: The filing date.
+ * - location: The location of the incident.
+ * - account_of_incident: The detailed account of the incident.
+ * - victim_count: Number of victims.
+ * - family_count: Number of families affected.
+ * - perpetrator_count: Number of perpetrators.
+ * - created: Creation timestamp.
+ * - changed: Last updated timestamp.
+ */
+#}
+<article{{ attributes.addClass('eden-incident') }}>
+  <div class="incident-header">
+    <h1 class="incident-title">{{ content.title }}</h1>
+    <div class="incident-meta">
+      <div class="case-number">
+        {{ content.case_number }}
+      </div>
+      <div class="dates">
+        <div class="incident-date">
+          {{ content.date_of_incident }}
+        </div>
+        <div class="filing-date">
+          {{ content.filing_date }}
+        </div>
+      </div>
+      <div class="location">
+        {{ content.location }}
+      </div>
+    </div>
+  </div>
+
+  <div class="incident-stats">
+    <div class="stat-item victims">
+      <span class="stat-label">{{ 'Individual Victims'|t }}</span>
+      <span class="stat-value">{{ content.victim_count.0['#markup'] }}</span>
+    </div>
+    <div class="stat-item families">
+      <span class="stat-label">{{ 'Families (Victims)'|t }}</span>
+      <span class="stat-value">{{ content.family_count.0['#markup'] }}</span>
+    </div>
+    <div class="stat-item perpetrators">
+      <span class="stat-label">{{ 'Perpetrators'|t }}</span>
+      <span class="stat-value">{{ content.perpetrator_count.0['#markup'] }}</span>
+    </div>
+  </div>
+
+  <div class="incident-details">
+    <div class="account">
+      <h2>{{ 'Account of Incident'|t }}</h2>
+      {{ content.account_of_incident }}
+    </div>
+  </div>
+
+  <div class="incident-footer">
+    <div class="timestamps">
+      <div class="created">
+        {{ content.created }}
+      </div>
+      <div class="changed">
+        {{ content.changed }}
+      </div>
+    </div>
+  </div>
+</article> 

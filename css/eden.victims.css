@@ -1,0 +1,607 @@
+/* Victim section styling */
+.victim-info {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.victim-info .form-item {
+  margin-bottom: 0.75em;
+  color: #333333;
+  line-height: 1.6;
+}
+
+/* Victim name styling */
+.victim-info .form-item-name {
+  font-size: 1.4em;
+  font-weight: 600;
+  color: #222222;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 2px solid #e6e6e6;
+}
+
+/* Personal information section */
+.victim-info .form-item-personal {
+  background: #f8f9fa;
+  padding: 0.8em;
+  border-radius: 4px;
+  margin: 1em 0;
+}
+
+/* Organization and occupation info */
+.victim-info .form-item-occupation,
+.victim-info .form-item-organization {
+  color: #666666;
+}
+
+/* Remarks section */
+.victim-info .form-item-remarks {
+  margin-top: 1.2em;
+  padding: 1em;
+  background: #fff8dc;
+  border-left: 4px solid #ffd700;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Operations section */
+.victim-operations {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.victim-operations .button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.victim-operations .button {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.victim-operations .button--primary {
+  background: #0d6efd;
+  color: white;
+  border: 1px solid #0a58ca;
+}
+
+.victim-operations .button--primary:hover {
+  background: #0a58ca;
+  text-decoration: none;
+}
+
+.button--danger {
+  background-color: #e74c3c;
+  color: white;
+}
+
+.button--danger:hover {
+  background-color: #c0392b;
+  color: white;
+}
+
+/* Violations table styling */
+.violations-table {
+  margin-top: 1rem;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.violations-table th {
+  background: #f5f6f7;
+  padding: 12px 15px;
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.violations-table td {
+  padding: 12px 15px;
+  vertical-align: top;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.violations-table tr:last-child td {
+  border-bottom: none;
+}
+
+.violations-table tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+.violations-table tr:hover {
+  background: #f0f4f7;
+}
+
+/* Violation title and operations */
+.violations-table .button--link {
+  padding: 0;
+  margin-left: 1em;
+  font-size: 0.9em;
+  color: #0074bd;
+  text-decoration: none;
+  background: none;
+  border: none;
+  font-weight: normal;
+}
+
+.violations-table .button--link:hover {
+  color: #005c94;
+  text-decoration: underline;
+}
+
+/* Category styling */
+.violations-table td:nth-child(2) {
+  color: #666666;
+  font-style: italic;
+}
+
+/* Description styling */
+.violations-table td:nth-child(3) {
+  max-width: 400px;
+  line-height: 1.5;
+}
+
+/* Add new section styling */
+details.add-new {
+  margin-top: 2em;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+details.add-new > summary {
+  padding: 1em;
+  background: #f5f6f7;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+details.add-new .details-wrapper {
+  padding: 1.5em;
+}
+
+/* Form elements styling */
+.form-item {
+  margin-bottom: 1.5em;
+}
+
+.form-item label {
+  font-weight: 600;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.form-item input[type="text"],
+.form-item textarea {
+  width: 100%;
+  padding: 0.8em;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+.form-item input[type="text"]:focus,
+.form-item textarea:focus {
+  border-color: #0074bd;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 116, 189, 0.1);
+}
+
+/* Submit button styling */
+.form-actions {
+  margin-top: 2em;
+  padding-top: 1.5em;
+  border-top: 1px solid #e0e0e0;
+}
+
+.form-actions .button {
+  padding: 0.8em 1.6em;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.form-actions .button:hover {
+  background: #218838;
+}
+
+.victim-details {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.details-section {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Header with operations */
+.section-header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #3498db;
+}
+
+.section-header {
+  color: #2c3e50;
+  font-size: 1.5em;
+  margin: 0;
+  padding: 0;
+}
+
+.header-operations {
+  display: flex;
+  gap: 10px;
+}
+
+.header-operations .button {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.9em;
+}
+
+.header-operations .button--primary {
+  background: #0d6efd;
+  color: white;
+  border: 1px solid #0a58ca;
+}
+
+.header-operations .button--primary:hover {
+  background: #0a58ca;
+  text-decoration: none;
+}
+
+.field-item {
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+.field-item strong {
+  min-width: 200px;
+  color: #34495e;
+  margin-right: 15px;
+}
+
+.field-item .field__item {
+  flex: 1;
+  min-width: 300px;
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  .field-item {
+    flex-direction: column;
+  }
+  
+  .field-item strong {
+    margin-bottom: 5px;
+  }
+  
+  .field-item .field__item {
+    width: 100%;
+  }
+}
+
+/* Status indicators */
+.victim-status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+/* Related incidents section */
+.victim-incidents .item-list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.victim-incidents .item-list li {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.victim-incidents .item-list li:last-child {
+  border-bottom: none;
+}
+
+/* Affiliation section specific styles */
+.victim-affiliation .field-item {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+/* Location section specific styles */
+.victim-location .field-item {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+/* Victim header styling */
+.victim-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.victim-name {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.victim-operations {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.victim-header .victim-name {
+  font-size: 1.4em;
+  font-weight: 600;
+  color: #222222;
+  margin: 0;
+}
+
+.victim-header .victim-operations {
+  display: flex;
+  gap: 10px;
+}
+
+.victim-header .button {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.9em;
+}
+
+.victim-header .button--primary {
+  background: #0d6efd;
+  color: white;
+  border: 1px solid #0a58ca;
+}
+
+.victim-header .button--primary:hover {
+  background: #0a58ca;
+  text-decoration: none;
+}
+
+.victim-header .button--small {
+  padding: 4px 8px;
+  font-size: 0.85em;
+}
+
+/* Detention details styling */
+.detention-details {
+  margin: 1em 0;
+  padding: 1em;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.detention-operations {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: 1px solid #e0e0e0;
+}
+
+.detention-operations .button--small {
+  padding: 0.4em 0.8em;
+  font-size: 0.9em;
+  background: #0074bd;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.detention-operations .button--small:hover {
+  background: #005c94;
+  text-decoration: none;
+}
+
+/* Modal form styling */
+.ui-dialog .ui-dialog-content {
+  padding: 1em;
+}
+
+.ui-dialog .form-item {
+  margin-bottom: 1.5em;
+}
+
+.ui-dialog .form-actions {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid #e0e0e0;
+  text-align: right;
+}
+
+.ui-dialog .form-actions .button {
+  margin-left: 1em;
+}
+
+.ui-dialog .form-actions .button--primary {
+  background: #28a745;
+  border-color: #28a745;
+}
+
+.ui-dialog .form-actions .button--primary:hover {
+  background: #218838;
+  border-color: #218838;
+}
+
+/* Detention Edit Form Modal Styling */
+.ui-dialog.detention-edit-dialog {
+  padding: 0;
+  border: none;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  max-width: 800px !important;
+  width: 90vw !important;
+}
+
+.ui-dialog.detention-edit-dialog .ui-dialog-titlebar {
+  background: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  padding: 15px 20px;
+}
+
+.ui-dialog.detention-edit-dialog .ui-dialog-title {
+  font-size: 1.2em;
+  font-weight: 500;
+}
+
+.ui-dialog.detention-edit-dialog .ui-dialog-titlebar-close {
+  background: none;
+  border: none;
+  color: white;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.ui-dialog.detention-edit-dialog .ui-dialog-titlebar-close:hover {
+  opacity: 1;
+}
+
+.detention-edit-form {
+  padding: 20px;
+  background: #fff;
+  border-radius: 0 0 8px 8px;
+}
+
+.detention-edit-form .form-item {
+  margin-bottom: 20px;
+}
+
+.detention-edit-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #2c3e50;
+}
+
+.detention-edit-form .description {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 4px;
+}
+
+.detention-edit-form input[type="text"],
+.detention-edit-form input[type="date"],
+.detention-edit-form textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+  transition: border-color 0.2s;
+}
+
+.detention-edit-form input[type="text"]:focus,
+.detention-edit-form input[type="date"]:focus,
+.detention-edit-form textarea:focus {
+  border-color: #3498db;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
+.detention-edit-form .form-item-already-released {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+.detention-edit-form .form-item-remarks-on-release {
+  margin-top: 15px;
+  padding: 15px;
+  background: #fff;
+  border-left: 3px solid #3498db;
+}
+
+.detention-edit-form .form-actions {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.detention-edit-form .button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.detention-edit-form .button--primary {
+  background: #3498db;
+  color: white;
+  border: none;
+}
+
+.detention-edit-form .button--primary:hover {
+  background: #2980b9;
+}
+
+.detention-edit-form .button--cancel {
+  background: #e74c3c;
+  color: white;
+  border: none;
+}
+
+.detention-edit-form .button--cancel:hover {
+  background: #c0392b;
+}
+
+.detention-edit-form .victim-name {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #eee;
+} 

@@ -1,0 +1,80 @@
+administer eden:
+  title: 'Administer Eden'
+  description: 'Allow access to Eden administration pages.'
+  restrict access: true
+
+access eden content:
+  title: 'Access Eden content'
+  description: 'View Eden incidents, victims, and violations.'
+
+create eden incident:
+  title: 'Create incidents'
+  description: 'Create new incident records.'
+
+edit eden incident:
+  title: 'Edit incidents'
+  description: 'Edit existing incident records.'
+
+delete eden incident:
+  title: 'Delete incidents'
+  description: 'Delete existing incident records.'
+
+create eden victim:
+  title: 'Create victims'
+  description: 'Create new victim records.'
+
+edit eden victim:
+  title: 'Edit victims'
+  description: 'Edit existing victim records.'
+
+delete eden victim:
+  title: 'Delete victims'
+  description: 'Delete existing victim records.'
+
+create eden violation:
+  title: 'Create violations'
+  description: 'Create new violation records.'
+
+edit eden violation:
+  title: 'Edit violations'
+  description: 'Edit existing violation records.'
+
+delete eden violation:
+  title: 'Delete violations'
+  description: 'Delete existing violation records.'
+
+create eden sector:
+  title: 'Create sectors'
+  description: 'Create new sector records.'
+
+edit eden sector:
+  title: 'Edit sectors'
+  description: 'Edit existing sector records.'
+
+delete eden sector:
+  title: 'Delete sectors'
+  description: 'Delete existing sector records.'
+
+create eden perpetrator:
+  title: 'Create perpetrators'
+  description: 'Create new perpetrator records.'
+
+edit eden perpetrator:
+  title: 'Edit perpetrators'
+  description: 'Edit existing perpetrator records.'
+
+delete eden perpetrator:
+  title: 'Delete perpetrators'
+  description: 'Delete existing perpetrator records.'
+
+create eden location:
+  title: 'Create locations'
+  description: 'Create new location records.'
+
+edit eden location:
+  title: 'Edit locations'
+  description: 'Edit existing location records.'
+
+delete eden location:
+  title: 'Delete locations'
+  description: 'Delete existing location records.' 

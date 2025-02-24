@@ -1,0 +1,26 @@
+victims:
+  version: 1.x
+  css:
+    theme:
+      css/eden.victims.css: {}
+
+perpetrators:
+  version: 1.x
+  css:
+    theme:
+      css/eden.perpetrators.css: {}
+
+incident_form:
+  version: 1.x
+  js:
+    js/incident-form.js: {}
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/drupalSettings 
+
+login:
+  version: 1.x
+  css:
+    theme:
+      css/eden.login.css: {} 

@@ -1,0 +1,16 @@
+name: EDEN
+type: module
+description: 'EDEN - Electronic Documentation of Evidence of human rights violations in the Philippines'
+package: Custom
+core_version_requirement: ^11
+version: '8.x-1.1'
+dependencies:
+  - drupal:views
+  - drupal:node
+  - drupal:user
+  - drupal:datetime
+  - drupal:text
+  - drupal:options
+  - drupal:field
+config_devel:
+  - core.entity_view_display.eden_incident.eden_incident.default 

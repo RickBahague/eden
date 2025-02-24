@@ -1,0 +1,141 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Eden module.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function eden_help($route_name, \Drupal\Core\Routing\RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.eden':
+      return '<p>' . t('Manages incidents, victims, and human rights violations.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function eden_theme($existing, $type, $theme, $path) {
+  return [
+    'eden_incident' => [
+      'render element' => 'elements',
+      'template' => 'eden-incident',
+    ],
+    'page__user__login' => [
+      'template' => 'page--user--login',
+      'base hook' => 'page',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function eden_theme_suggestions_eden_incident(array $variables) {
+  $suggestions = [];
+  $incident = $variables['elements']['#eden_incident'];
+  $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
+
+  $suggestions[] = 'eden_incident__' . $sanitized_view_mode;
+  $suggestions[] = 'eden_incident__' . $incident->bundle();
+  $suggestions[] = 'eden_incident__' . $incident->bundle() . '__' . $sanitized_view_mode;
+  $suggestions[] = 'eden_incident__' . $incident->id();
+  $suggestions[] = 'eden_incident__' . $incident->id() . '__' . $sanitized_view_mode;
+
+  return $suggestions;
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function eden_preprocess_eden_incident(&$variables) {
+  // Add the CSS library.
+  $variables['#attached']['library'][] = 'eden/incident';
+
+  /** @var \Drupal\eden\Entity\Incident $incident */
+  $incident = $variables['elements']['#eden_incident'];
+  $view_builder = \Drupal::entityTypeManager()->getViewBuilder('eden_incident');
+
+  // Ensure we have a content array
+  $variables['content'] = $variables['content'] ?? [];
+
+  // Prepare each field for display if not already prepared
+  if (!isset($variables['content']['title'])) {
+    $variables['content']['title'] = $view_builder->viewField($incident->get('title'));
+  }
+  if (!isset($variables['content']['case_number'])) {
+    $variables['content']['case_number'] = $view_builder->viewField($incident->get('case_number'));
+  }
+  if (!isset($variables['content']['date_of_incident'])) {
+    $variables['content']['date_of_incident'] = $view_builder->viewField($incident->get('date_of_incident'));
+  }
+  if (!isset($variables['content']['filing_date'])) {
+    $variables['content']['filing_date'] = $view_builder->viewField($incident->get('filing_date'));
+  }
+  if (!isset($variables['content']['location'])) {
+    $variables['content']['location'] = $view_builder->viewField($incident->get('location'));
+  }
+  if (!isset($variables['content']['account_of_incident'])) {
+    $variables['content']['account_of_incident'] = $view_builder->viewField($incident->get('account_of_incident'));
+  }
+  if (!isset($variables['content']['victim_count'])) {
+    $variables['content']['victim_count'] = $view_builder->viewField($incident->get('victim_count'));
+  }
+  if (!isset($variables['content']['family_count'])) {
+    $variables['content']['family_count'] = $view_builder->viewField($incident->get('family_count'));
+  }
+  if (!isset($variables['content']['perpetrator_count'])) {
+    $variables['content']['perpetrator_count'] = $view_builder->viewField($incident->get('perpetrator_count'));
+  }
+  if (!isset($variables['content']['created'])) {
+    $variables['content']['created'] = $view_builder->viewField($incident->get('created'));
+  }
+  if (!isset($variables['content']['changed'])) {
+    $variables['content']['changed'] = $view_builder->viewField($incident->get('changed'));
+  }
+}
+
+/**
+ * Implements hook_library_info_build().
+ */
+function eden_library_info_build() {
+  $libraries = [];
+  
+  $libraries['incident'] = [
+    'version' => '1.x',
+    'css' => [
+      'theme' => [
+        'css/eden.incident.css' => [],
+      ],
+    ],
+  ];
+  
+  return $libraries;
+}
+
+/**
+ * Implements hook_theme_suggestions_page_alter().
+ */
+function eden_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  
+  // Add a template suggestion for the login page
+  if ($route_name === 'user.login') {
+    $suggestions[] = 'page__user__login';
+  }
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function eden_page_attachments(array &$attachments) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+  
+  // Attach the login library on the login page
+  if ($route_name === 'user.login') {
+    $attachments['#attached']['library'][] = 'eden/login';
+  }
+} 

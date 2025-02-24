@@ -1,0 +1,3579 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the EDEN module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function eden_schema() {
+  $schema = [];
+
+  // Base table for the Location entity
+  $schema['eden_location'] = [
+    'description' => 'The base table for location entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique location ID.',
+      ],
+      'uuid' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'Unique identifier for this entity.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this entity.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'uuid' => ['uuid'],
+    ],
+    'indexes' => [
+      'revision_id' => ['revision_id'],
+    ],
+    'foreign keys' => [
+      'revision' => [
+        'table' => 'eden_location_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+    ],
+  ];
+
+  // Location entity tables
+  $schema['eden_location_field_data'] = [
+    'description' => 'The data table for location entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The location entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the location.',
+      ],
+      'town' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the town.',
+      ],
+      'province' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the province.',
+      ],
+      'region' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the region.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the location.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the location was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the location was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Boolean indicating whether this is the default language.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'langcode'],
+    'indexes' => [
+      'id' => ['id'],
+      'revision_id' => ['revision_id'],
+      'langcode' => ['langcode'],
+      'uid' => ['uid'],
+    ],
+    'foreign keys' => [
+      'location_owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Base table for the Incident entity
+  $schema['eden_incident'] = [
+    'description' => 'The base table for storing incident entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique incident ID.',
+      ],
+      'uuid' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'Unique identifier for this entity.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this entity.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'uuid' => ['uuid'],
+    ],
+    'indexes' => [
+      'revision_id' => ['revision_id'],
+    ],
+    'foreign keys' => [
+      'revision' => [
+        'table' => 'eden_incident_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+    ],
+  ];
+
+  // Data table for the Incident entity
+  $schema['eden_incident_field_data'] = [
+    'description' => 'The data table for storing incident entity fields.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The incident entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this data item.',
+      ],
+      'case_number' => [
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+        'description' => 'Auto-generated case number (EDN-YYYY-MM-<serial number>).',
+      ],
+      'involving_children' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident involves children.',
+      ],
+      'mining_related' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident is mining-related.',
+      ],
+      'agrarian_related' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident is agrarian-related.',
+      ],
+      'demolition_related' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident is demolition-related.',
+      ],
+      'unspecified_date' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident date is unspecified.',
+      ],
+      'incident_continuing' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident is ongoing.',
+      ],
+      'title' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The title of the incident.',
+      ],
+      'date_of_incident' => [
+        'type' => 'varchar',
+        'mysql_type' => 'date',
+        'not null' => TRUE,
+        'default' => '1970-01-01',
+        'description' => 'The date when the incident occurred.',
+      ],
+      'victim_count' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The number of victims involved in this incident.',
+      ],
+      'family_count' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The number of families affected by this incident.',
+      ],
+      'perpetrator_count' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The number of perpetrators involved in this incident.',
+      ],
+      'location' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The ID of the location where the incident occurred.',
+      ],
+      'account_of_incident__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+        'description' => 'Detailed account of what happened in the incident.',
+      ],
+      'account_of_incident__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Text format for the account of incident.',
+      ],
+      'filing_date' => [
+        'type' => 'varchar',
+        'mysql_type' => 'date',
+        'not null' => TRUE,
+        'default' => '1970-01-01',
+        'description' => 'The date when the incident was filed.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the incident.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the incident.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the incident was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the incident was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'langcode'],
+    'indexes' => [
+      'case_number' => ['case_number'],
+      'title' => ['title'],
+      'date_of_incident' => ['date_of_incident'],
+      'filing_date' => ['filing_date'],
+      'uid' => ['uid'],
+      'created' => ['created'],
+      'changed' => ['changed'],
+    ],
+    'foreign keys' => [
+      'versioned_incident' => [
+        'table' => 'eden_incident',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision' => [
+        'table' => 'eden_incident_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+      'location' => [
+        'table' => 'eden_location',
+        'columns' => ['location' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Revision table for the Incident entity
+  $schema['eden_incident_revision'] = [
+    'description' => 'The revision table for storing incident entity revisions.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The incident entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this revision.',
+      ],
+      'revision_uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the revision.',
+      ],
+      'revision_timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the revision was created.',
+      ],
+      'revision_log' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'The log message explaining the changes in this revision.',
+      ],
+      'revision_default' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'A boolean indicating whether this revision is the default revision.',
+      ],
+    ],
+    'primary key' => ['revision_id'],
+    'indexes' => [
+      'id' => ['id'],
+      'revision_uid' => ['revision_uid'],
+    ],
+    'foreign keys' => [
+      'versioned_incident' => [
+        'table' => 'eden_incident',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision_user' => [
+        'table' => 'users',
+        'columns' => ['revision_uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Revision data table for the Incident entity
+  $schema['eden_incident_field_revision'] = [
+    'description' => 'The revision data table for storing incident entity field revisions.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The incident entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this data item.',
+      ],
+      'case_number' => [
+        'type' => 'varchar',
+        'length' => 20,
+        'not null' => TRUE,
+        'description' => 'Auto-generated case number (EDN-YYYY-MM-<serial number>).',
+      ],
+      'involving_children' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident involves children.',
+      ],
+      'mining_related' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident is mining-related.',
+      ],
+      'agrarian_related' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident is agrarian-related.',
+      ],
+      'demolition_related' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident is demolition-related.',
+      ],
+      'unspecified_date' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident date is unspecified.',
+      ],
+      'incident_continuing' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the incident is ongoing.',
+      ],
+      'title' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The title of the incident.',
+      ],
+      'date_of_incident' => [
+        'type' => 'varchar',
+        'mysql_type' => 'date',
+        'not null' => TRUE,
+        'default' => '1970-01-01',
+        'description' => 'The date when the incident occurred.',
+      ],
+      'victim_count' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The number of victims involved in this incident.',
+      ],
+      'family_count' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The number of families affected by this incident.',
+      ],
+      'perpetrator_count' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The number of perpetrators involved in this incident.',
+      ],
+      'location' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The ID of the location where the incident occurred.',
+      ],
+      'account_of_incident__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+        'description' => 'Detailed account of what happened in the incident.',
+      ],
+      'account_of_incident__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Text format for the account of incident.',
+      ],
+      'filing_date' => [
+        'type' => 'varchar',
+        'mysql_type' => 'date',
+        'not null' => TRUE,
+        'default' => '1970-01-01',
+        'description' => 'The date when the incident was filed.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the incident.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the incident.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the incident was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the incident was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'revision_id', 'langcode'],
+    'indexes' => [
+      'case_number' => ['case_number'],
+      'title' => ['title'],
+      'date_of_incident' => ['date_of_incident'],
+      'filing_date' => ['filing_date'],
+      'uid' => ['uid'],
+      'created' => ['created'],
+      'changed' => ['changed'],
+    ],
+    'foreign keys' => [
+      'versioned_incident' => [
+        'table' => 'eden_incident',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision' => [
+        'table' => 'eden_incident_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+      'location' => [
+        'table' => 'eden_location',
+        'columns' => ['location' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Base table for the Victim entity
+  $schema['eden_victim'] = [
+    'description' => 'The base table for storing victim entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique victim ID.',
+      ],
+      'uuid' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'Unique identifier for this entity.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this entity.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'uuid' => ['uuid'],
+    ],
+    'indexes' => [
+      'revision_id' => ['revision_id'],
+    ],
+    'foreign keys' => [
+      'revision' => [
+        'table' => 'eden_victim_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+    ],
+  ];
+
+  // Data table for the Victim entity
+  $schema['eden_victim_field_data'] = [
+    'description' => 'The data table for storing victim entity fields.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The victim entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this data item.',
+      ],
+      'victim_type' => [
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 'individual',
+        'description' => 'The type of victim (individual, family, community, group, organization).',
+      ],
+      'group_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Name of the family/community/group/organization.',
+      ],
+      'first_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The first name of the victim.',
+      ],
+      'last_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The last name of the victim.',
+      ],
+      'middle_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The middle name of the victim.',
+      ],
+      'name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The computed full name of the victim.',
+      ],
+      'occupation' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The occupation of the victim.',
+      ],
+      'birthdate' => [
+        'type' => 'varchar',
+        'mysql_type' => 'date',
+        'not null' => FALSE,
+        'description' => 'The birthdate of the victim.',
+      ],
+      'age' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The age of the victim.',
+      ],
+      'gender' => [
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+        'default' => 'male',
+        'description' => 'The gender of the victim.',
+      ],
+      'civil_status' => [
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 'single',
+        'description' => 'The civil status of the victim.',
+      ],
+      'ethnicity' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The ethnicity of the victim.',
+      ],
+      'number_of_children' => [
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => 'The total number of children.',
+      ],
+      'children_below_18' => [
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => 'The number of children below 18 years old.',
+      ],
+      'residence' => [
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => 'The complete address/residence details of the victim (street, barangay, etc.).',
+      ],
+      'location' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The ID of the location (town/city) where the victim is from.',
+      ],
+      'organization_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The organization name the victim belongs to.',
+      ],
+      'position' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The position of the victim in their organization.',
+      ],
+      'other_affiliation' => [
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => 'Other affiliations of the victim.',
+      ],
+      'remarks__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Additional remarks about the victim.',
+      ],
+      'remarks__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Text format for remarks.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the victim.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the victim record.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the victim record was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the victim record was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'langcode'],
+    'indexes' => [
+      'name' => ['name'],
+      'first_name' => ['first_name'],
+      'last_name' => ['last_name'],
+      'gender' => ['gender'],
+      'civil_status' => ['civil_status'],
+      'location' => ['location'],
+      'uid' => ['uid'],
+      'created' => ['created'],
+      'changed' => ['changed'],
+    ],
+    'foreign keys' => [
+      'versioned_victim' => [
+        'table' => 'eden_victim',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision' => [
+        'table' => 'eden_victim_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+      'location' => [
+        'table' => 'eden_location',
+        'columns' => ['location' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Revision table for the Victim entity
+  $schema['eden_victim_revision'] = [
+    'description' => 'The revision table for storing victim entity revisions.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The victim entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this revision.',
+      ],
+      'revision_uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the revision.',
+      ],
+      'revision_timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the revision was created.',
+      ],
+      'revision_log' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'The log message explaining the changes in this revision.',
+      ],
+      'revision_default' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'A boolean indicating whether this revision is the default revision.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the incident was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['revision_id'],
+    'indexes' => [
+      'id' => ['id'],
+      'revision_uid' => ['revision_uid'],
+    ],
+    'foreign keys' => [
+      'versioned_victim' => [
+        'table' => 'eden_victim',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision_user' => [
+        'table' => 'users',
+        'columns' => ['revision_uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Revision data table for the Victim entity
+  $schema['eden_victim_field_revision'] = [
+    'description' => 'The revision data table for storing victim entity field revisions.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The victim entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this data item.',
+      ],
+      'victim_type' => [
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 'individual',
+        'description' => 'The type of victim (individual, family, community, group, organization).',
+      ],
+      'group_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Name of the family/community/group/organization.',
+      ],
+      'first_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The first name of the victim.',
+      ],
+      'last_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The last name of the victim.',
+      ],
+      'middle_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The middle name of the victim.',
+      ],
+      'name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The computed full name of the victim.',
+      ],
+      'occupation' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The occupation of the victim.',
+      ],
+      'birthdate' => [
+        'type' => 'varchar',
+        'mysql_type' => 'date',
+        'not null' => FALSE,
+        'description' => 'The birthdate of the victim.',
+      ],
+      'age' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The age of the victim.',
+      ],
+      'gender' => [
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => FALSE,
+        'default' => 'male',
+        'description' => 'The gender of the victim.',
+      ],
+      'civil_status' => [
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => 'single',
+        'description' => 'The civil status of the victim.',
+      ],
+      'ethnicity' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The ethnicity of the victim.',
+      ],
+      'number_of_children' => [
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => 'The total number of children.',
+      ],
+      'children_below_18' => [
+        'type' => 'int',
+        'not null' => FALSE,
+        'description' => 'The number of children below 18 years old.',
+      ],
+      'residence' => [
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => 'The complete address/residence details of the victim (street, barangay, etc.).',
+      ],
+      'location' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The ID of the location (town/city) where the victim is from.',
+      ],
+      'organization_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The organization name the victim belongs to.',
+      ],
+      'position' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The position of the victim in their organization.',
+      ],
+      'other_affiliation' => [
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => 'Other affiliations of the victim.',
+      ],
+      'remarks__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Additional remarks about the victim.',
+      ],
+      'remarks__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Text format for remarks.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the victim.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the victim record.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the victim record was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the victim record was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'revision_id', 'langcode'],
+    'indexes' => [
+      'name' => ['name'],
+      'first_name' => ['first_name'],
+      'last_name' => ['last_name'],
+      'gender' => ['gender'],
+      'civil_status' => ['civil_status'],
+      'location' => ['location'],
+      'uid' => ['uid'],
+      'created' => ['created'],
+      'changed' => ['changed'],
+    ],
+    'foreign keys' => [
+      'versioned_victim' => [
+        'table' => 'eden_victim',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision' => [
+        'table' => 'eden_victim_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+      'location' => [
+        'table' => 'eden_location',
+        'columns' => ['location' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Base table for the Violation entity
+  $schema['eden_violation'] = [
+    'description' => 'The base table for storing human rights violation entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique violation ID.',
+      ],
+      'uuid' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'Unique identifier for this entity.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this entity.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'uuid' => ['uuid'],
+    ],
+    'indexes' => [
+      'revision_id' => ['revision_id'],
+    ],
+    'foreign keys' => [
+      'revision' => [
+        'table' => 'eden_violation_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+    ],
+  ];
+
+  // Data table for the Violation entity
+  $schema['eden_violation_field_data'] = [
+    'description' => 'The data table for storing human rights violation entity fields.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The violation entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this data item.',
+      ],
+      'violation' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name/title of the violation.',
+      ],
+      'description__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+        'description' => 'Detailed description of the violation.',
+      ],
+      'description__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Text format for the violation description.',
+      ],
+      'category' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The category of the violation.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the violation.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the violation record.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the violation record was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the violation record was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'langcode'],
+    'indexes' => [
+      'violation' => ['violation'],
+      'category' => ['category'],
+      'uid' => ['uid'],
+      'created' => ['created'],
+      'changed' => ['changed'],
+    ],
+    'foreign keys' => [
+      'violation' => [
+        'table' => 'eden_violation',
+        'columns' => ['id' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Revision table for the Violation entity
+  $schema['eden_violation_revision'] = [
+    'description' => 'The revision table for storing human rights violation entity revisions.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The violation entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this revision.',
+      ],
+      'revision_uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the revision.',
+      ],
+      'revision_timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the revision was created.',
+      ],
+      'revision_log' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'The log message explaining the changes in this revision.',
+      ],
+      'revision_default' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'A boolean indicating whether this revision is the default revision.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the incident was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['revision_id'],
+    'indexes' => [
+      'id' => ['id'],
+      'revision_uid' => ['revision_uid'],
+    ],
+    'foreign keys' => [
+      'versioned_violation' => [
+        'table' => 'eden_violation',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision_user' => [
+        'table' => 'users',
+        'columns' => ['revision_uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Revision data table for the Violation entity
+  $schema['eden_violation_field_revision'] = [
+    'description' => 'The revision data table for storing human rights violation entity field revisions.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The violation entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this data item.',
+      ],
+      'violation' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name/title of the violation.',
+      ],
+      'description__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+        'description' => 'Detailed description of the violation.',
+      ],
+      'description__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Text format for the violation description.',
+      ],
+      'category' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The category of the violation.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the violation.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the violation record.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the violation record was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the violation record was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'revision_id', 'langcode'],
+    'indexes' => [
+      'violation' => ['violation'],
+      'category' => ['category'],
+      'uid' => ['uid'],
+      'created' => ['created'],
+      'changed' => ['changed'],
+    ],
+    'foreign keys' => [
+      'versioned_violation' => [
+        'table' => 'eden_violation',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision' => [
+        'table' => 'eden_violation_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Base table for the Sector entity
+  $schema['eden_sector'] = [
+    'description' => 'The base table for storing sector entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique sector ID.',
+      ],
+      'uuid' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'Unique identifier for this entity.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this entity.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'uuid' => ['uuid'],
+    ],
+    'indexes' => [
+      'revision_id' => ['revision_id'],
+    ],
+    'foreign keys' => [
+      'revision' => [
+        'table' => 'eden_sector_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+    ],
+  ];
+
+  // Data table for the Sector entity
+  $schema['eden_sector_field_data'] = [
+    'description' => 'The data table for storing sector entity fields.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The sector entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this data item.',
+      ],
+      'name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the sector.',
+      ],
+      'sector_code' => [
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The unique code for this sector.',
+      ],
+      'description__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+        'description' => 'Detailed description of the sector.',
+      ],
+      'description__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Text format for the sector description.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the sector.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the sector.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the sector was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the sector was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'langcode'],
+    'indexes' => [
+      'name' => ['name'],
+      'sector_code' => ['sector_code'],
+      'uid' => ['uid'],
+      'created' => ['created'],
+      'changed' => ['changed'],
+    ],
+    'unique keys' => [
+      'sector_code_language' => ['sector_code', 'langcode'],
+    ],
+    'foreign keys' => [
+      'sector' => [
+        'table' => 'eden_sector',
+        'columns' => ['id' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Revision table for the Sector entity
+  $schema['eden_sector_revision'] = [
+    'description' => 'The revision table for storing sector entity revisions.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The sector entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this revision.',
+      ],
+      'revision_uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the revision.',
+      ],
+      'revision_timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the revision was created.',
+      ],
+      'revision_log' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'The log message explaining the changes in this revision.',
+      ],
+      'revision_default' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'A boolean indicating whether this revision is the default revision.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the incident was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['revision_id'],
+    'indexes' => [
+      'id' => ['id'],
+      'revision_uid' => ['revision_uid'],
+    ],
+    'foreign keys' => [
+      'versioned_sector' => [
+        'table' => 'eden_sector',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision_user' => [
+        'table' => 'users',
+        'columns' => ['revision_uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Revision data table for the Sector entity
+  $schema['eden_sector_field_revision'] = [
+    'description' => 'The revision data table for storing sector entity field revisions.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The sector entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this data item.',
+      ],
+      'name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the sector.',
+      ],
+      'sector_code' => [
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'description' => 'The unique code for this sector.',
+      ],
+      'description__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => TRUE,
+        'description' => 'Detailed description of the sector.',
+      ],
+      'description__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'Text format for the sector description.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the sector.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the sector.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the sector was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the sector was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'revision_id', 'langcode'],
+    'indexes' => [
+      'name' => ['name'],
+      'sector_code' => ['sector_code'],
+      'uid' => ['uid'],
+      'created' => ['created'],
+      'changed' => ['changed'],
+    ],
+    'unique keys' => [
+      'sector_code_language_revision' => ['sector_code', 'langcode', 'revision_id'],
+    ],
+    'foreign keys' => [
+      'versioned_sector' => [
+        'table' => 'eden_sector',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision' => [
+        'table' => 'eden_sector_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Base table for the Perpetrator entity
+  $schema['eden_perpetrator'] = [
+    'description' => 'The base table for storing perpetrator entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique perpetrator ID.',
+      ],
+      'uuid' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'Unique identifier for this entity.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this entity.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'uuid' => ['uuid'],
+    ],
+    'indexes' => [
+      'revision_id' => ['revision_id'],
+    ],
+    'foreign keys' => [
+      'revision' => [
+        'table' => 'eden_perpetrator_revision',
+        'columns' => ['revision_id' => 'revision_id'],
+      ],
+    ],
+  ];
+
+  $schema['eden_perpetrator_revision'] = [
+    'description' => 'Stores revision information for perpetrator entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The entity ID this revision belongs to.',
+      ],
+      'revision_id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'The primary identifier for this revision.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this revision.',
+      ],
+      'revision_uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The user ID of the author of the revision.',
+      ],
+      'revision_timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the revision was created.',
+      ],
+      'revision_log' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'The log entry explaining the changes in this revision.',
+      ],
+      'revision_default' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'A boolean indicating whether this revision is the default revision.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the perpetrator.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'A boolean indicating whether this is the default translation.',
+      ],
+    ],
+    'primary key' => ['revision_id'],
+    'indexes' => [
+      'id' => ['id', 'langcode'],
+      'revision_uid' => ['revision_uid'],
+    ],
+    'foreign keys' => [
+      'versioned_entity' => [
+        'table' => 'eden_perpetrator',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision_user' => [
+        'table' => 'users',
+        'columns' => ['revision_uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  $schema['eden_perpetrator_field_data'] = [
+    'description' => 'The data table for perpetrator entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The perpetrator entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the perpetrator.',
+      ],
+      'group_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The type of perpetrator group.',
+      ],
+      'unit' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The unit of the perpetrator group.',
+      ],
+      'brief_info__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Brief information about the perpetrator group.',
+      ],
+      'brief_info__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Text format for brief info.',
+      ],
+      'commanding_officer' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The commanding officer of the unit.',
+      ],
+      'location' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'Reference to the location entity.',
+      ],
+      'remarks__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Additional remarks about the perpetrator.',
+      ],
+      'remarks__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Text format for remarks.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the perpetrator.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the perpetrator was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the perpetrator was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Boolean indicating whether this is the default language.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'langcode'],
+    'indexes' => [
+      'id' => ['id'],
+      'revision_id' => ['revision_id'],
+      'langcode' => ['langcode'],
+      'uid' => ['uid'],
+    ],
+    'foreign keys' => [
+      'perpetrator_owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  $schema['eden_perpetrator_field_revision'] = [
+    'description' => 'The revision data table for perpetrator entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The perpetrator entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this data item.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the perpetrator.',
+      ],
+      'group_name' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The type of perpetrator group.',
+      ],
+      'unit' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The unit of the perpetrator group.',
+      ],
+      'brief_info__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Brief information about the perpetrator group.',
+      ],
+      'brief_info__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Text format for brief info.',
+      ],
+      'commanding_officer' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The commanding officer of the unit.',
+      ],
+      'location' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+        'description' => 'Reference to the location entity.',
+      ],
+      'remarks__value' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Additional remarks about the perpetrator.',
+      ],
+      'remarks__format' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Text format for remarks.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the perpetrator.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the perpetrator was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the perpetrator was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Boolean indicating whether this is the default language.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'revision_id', 'langcode'],
+    'indexes' => [
+      'id' => ['id'],
+      'revision_id' => ['revision_id'],
+      'langcode' => ['langcode'],
+      'uid' => ['uid'],
+    ],
+    'foreign keys' => [
+      'versioned_entity' => [
+        'table' => 'eden_perpetrator',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision_user' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Incident-Perpetrator relationship table
+  $schema['eden_incident_perpetrator'] = [
+    'description' => 'Bridge table for incident-perpetrator relationships.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique relationship ID.',
+      ],
+      'incident_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The incident entity ID.',
+      ],
+      'perpetrator_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The perpetrator entity ID.',
+      ],
+      'description' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Description of the perpetrator\'s involvement in this incident.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the relationship was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the relationship was last updated.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the relationship.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Status of the relationship.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'incident_perpetrator' => ['incident_id', 'perpetrator_id'],
+      'perpetrator_incident' => ['perpetrator_id', 'incident_id'],
+    ],
+    'foreign keys' => [
+      'incident' => [
+        'table' => 'eden_incident',
+        'columns' => ['incident_id' => 'id'],
+      ],
+      'perpetrator' => [
+        'table' => 'eden_perpetrator',
+        'columns' => ['perpetrator_id' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Incident-Victim relationship table
+  $schema['eden_incident_victim'] = [
+    'description' => 'Bridge table for incident-victim relationships.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique relationship ID.',
+      ],
+      'incident_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The incident entity ID.',
+      ],
+      'victim_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The victim entity ID.',
+      ],
+      'date_of_detention' => [
+        'type' => 'varchar',
+        'mysql_type' => 'date',
+        'not null' => FALSE,
+        'description' => 'The date when the victim was detained.',
+      ],
+      'place_of_arrest' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The place where the victim was arrested.',
+      ],
+      'place_of_detention' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The place where the victim is/was detained.',
+      ],
+      'charges' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'The charges filed against the victim.',
+      ],
+      'already_released' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'Whether the victim has been released from detention.',
+      ],
+      'remarks_on_release' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Remarks regarding the release of the victim.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the relationship was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the relationship was last updated.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the relationship.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Status of the relationship.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'incident_victim' => ['incident_id', 'victim_id'],
+    ],
+    'foreign keys' => [
+      'incident' => [
+        'table' => 'eden_incident',
+        'columns' => ['incident_id' => 'id'],
+      ],
+      'victim' => [
+        'table' => 'eden_victim',
+        'columns' => ['victim_id' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Incident-Victim-Violation relationship table
+  $schema['eden_incident_victim_violation'] = [
+    'description' => 'Bridge table for incidents, victims, and their violations.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique ID.',
+      ],
+      'incident_victim_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The incident-victim relationship ID.',
+      ],
+      'incident_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The incident entity ID.',
+      ],
+      'victim_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The victim entity ID.',
+      ],
+      'violation_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The violation entity ID.',
+      ],
+      'description' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Description of how this violation was committed.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the relationship.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Status of the relationship.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the record was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the record was last updated.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'incident_victim_violation' => ['incident_id', 'victim_id', 'violation_id'],
+      'incident_victim' => ['incident_victim_id'],
+    ],
+    'foreign keys' => [
+      'incident_victim' => [
+        'table' => 'eden_incident_victim',
+        'columns' => ['incident_victim_id' => 'id'],
+      ],
+      'incident' => [
+        'table' => 'eden_incident',
+        'columns' => ['incident_id' => 'id'],
+      ],
+      'victim' => [
+        'table' => 'eden_victim',
+        'columns' => ['victim_id' => 'id'],
+      ],
+      'violation' => [
+        'table' => 'eden_violation',
+        'columns' => ['violation_id' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Data table for the Town-Province-Region entity
+  $schema['eden_location_field_data'] = [
+    'description' => 'The data table for location entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The location entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The current revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the location.',
+      ],
+      'town' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the town.',
+      ],
+      'province' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the province.',
+      ],
+      'region' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the region.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the location.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the location was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the location was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Boolean indicating whether this is the default language.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'langcode'],
+    'indexes' => [
+      'id' => ['id'],
+      'revision_id' => ['revision_id'],
+      'langcode' => ['langcode'],
+      'uid' => ['uid'],
+    ],
+    'foreign keys' => [
+      'location_owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Revision table for the Town-Province-Region entity
+  $schema['eden_location_revision'] = [
+    'description' => 'The revision table for location entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The location entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this revision.',
+      ],
+      'revision_uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the revision.',
+      ],
+      'revision_timestamp' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the revision was created.',
+      ],
+      'revision_log' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'The log message explaining the changes in this revision.',
+      ],
+      'revision_default' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'A boolean indicating whether this revision is the default revision.',
+      ],
+    ],
+    'primary key' => ['revision_id'],
+    'indexes' => [
+      'id' => ['id'],
+      'revision_uid' => ['revision_uid'],
+    ],
+    'foreign keys' => [
+      'versioned_location' => [
+        'table' => 'eden_location',
+        'columns' => ['id' => 'id'],
+      ],
+      'revision_user' => [
+        'table' => 'users',
+        'columns' => ['revision_uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Revision data table for the Town-Province-Region entity
+  $schema['eden_location_field_revision'] = [
+    'description' => 'The revision data table for location entities.',
+    'fields' => [
+      'id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The location entity ID.',
+      ],
+      'revision_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The revision ID.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this revision.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Published status of the location revision.',
+      ],
+      'town' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the town in this revision.',
+      ],
+      'province' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the province in this revision.',
+      ],
+      'region' => [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'description' => 'The name of the region in this revision.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the revision was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the revision was last updated.',
+      ],
+      'default_langcode' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Boolean indicating whether this translation is the default language version.',
+      ],
+      'revision_translation_affected' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => FALSE,
+        'description' => 'Indicates if the last edit of a translation belongs to current revision.',
+      ],
+    ],
+    'primary key' => ['id', 'revision_id', 'langcode'],
+    'indexes' => [
+      'id' => ['id'],
+      'revision_id' => ['revision_id'],
+      'langcode' => ['langcode'],
+    ],
+  ];
+
+  // Incident-Location relationship table
+  $schema['eden_incident_location'] = [
+    'description' => 'Bridge table for incident-location relationships.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique relationship ID.',
+      ],
+      'incident_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The incident entity ID.',
+      ],
+      'location_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The location entity ID.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the relationship.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Status of the relationship.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the relationship was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the relationship was last updated.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'incident_location' => ['incident_id', 'location_id'],
+    ],
+    'foreign keys' => [
+      'incident' => [
+        'table' => 'eden_incident',
+        'columns' => ['incident_id' => 'id'],
+      ],
+      'location' => [
+        'table' => 'eden_location',
+        'columns' => ['location_id' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Victim-Location relationship table
+  $schema['eden_victim_location'] = [
+    'description' => 'Bridge table for victim-location relationships.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique relationship ID.',
+      ],
+      'victim_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The victim entity ID.',
+      ],
+      'location_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The location entity ID.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the relationship.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Status of the relationship.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the relationship was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the relationship was last updated.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'victim_location' => ['victim_id', 'location_id'],
+    ],
+    'foreign keys' => [
+      'victim' => [
+        'table' => 'eden_victim',
+        'columns' => ['victim_id' => 'id'],
+      ],
+      'location' => [
+        'table' => 'eden_location',
+        'columns' => ['location_id' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  return $schema;
+}
+
+/**
+ * Implements hook_install().
+ */
+function eden_install() {
+  try {
+    $database = \Drupal::database();
+    $schema = eden_schema();
+    $logger = \Drupal::logger('eden');
+
+    // Installation order - respecting dependencies
+    $install_order = [
+      // Base tables first
+      'eden_location',
+      'eden_incident',
+      'eden_victim',
+      'eden_violation',
+      'eden_perpetrator',
+      'eden_sector',
+      
+      // Field data tables
+      'eden_location_field_data',
+      'eden_incident_field_data',
+      'eden_victim_field_data',
+      'eden_violation_field_data',
+      'eden_perpetrator_field_data',
+      'eden_sector_field_data',
+      
+      // Revision tables
+      'eden_location_revision',
+      'eden_incident_revision',
+      'eden_victim_revision',
+      'eden_violation_revision',
+      'eden_perpetrator_revision',
+      'eden_sector_revision',
+      
+      // Revision field data tables
+      'eden_location_field_revision',
+      'eden_incident_field_revision',
+      'eden_victim_field_revision',
+      'eden_violation_field_revision',
+      'eden_perpetrator_field_revision',
+      'eden_sector_field_revision',
+      
+      // Relationship tables last
+      'eden_incident_location',
+      'eden_incident_perpetrator',
+      'eden_incident_victim',
+      'eden_incident_victim_violation',
+      'eden_victim_location'
+    ];
+
+    // Disable foreign key checks
+    $database->query('SET FOREIGN_KEY_CHECKS = 0');
+
+    // Create tables in the correct order
+    foreach ($install_order as $table_name) {
+      if (isset($schema[$table_name])) {
+        try {
+          if ($database->schema()->tableExists($table_name)) {
+            $database->schema()->dropTable($table_name);
+            $logger->notice('Dropped existing table @table', ['@table' => $table_name]);
+          }
+          
+          $database->schema()->createTable($table_name, $schema[$table_name]);
+          $logger->notice('Created table @table', ['@table' => $table_name]);
+        }
+        catch (\Exception $e) {
+          $logger->error('Failed to create table @table: @message', [
+            '@table' => $table_name,
+            '@message' => $e->getMessage()
+          ]);
+        }
+      }
+      else {
+        $logger->warning('Schema definition not found for table @table', ['@table' => $table_name]);
+      }
+    }
+
+    // Re-enable foreign key checks
+    $database->query('SET FOREIGN_KEY_CHECKS = 1');
+    
+    // Clear all caches
+    drupal_flush_all_caches();
+    
+    $logger->notice('Eden module installation completed successfully');
+  }
+  catch (\Exception $e) {
+    $logger->error('Error during Eden module installation: @message', ['@message' => $e->getMessage()]);
+    // Don't throw the exception - allow installation to complete even with errors
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function eden_uninstall() {
+  try {
+    $database = \Drupal::database();
+    $schema = $database->schema();
+    $logger = \Drupal::logger('eden');
+    
+    // Uninstall order - reverse of dependencies
+    $uninstall_order = [
+      // Relationship tables first
+      'eden_incident_location',
+      'eden_incident_perpetrator',
+      'eden_incident_victim',
+      'eden_incident_victim_violation',
+      'eden_victim_location',
+      
+      // Revision field data tables
+      'eden_incident_field_revision',
+      'eden_location_field_revision',
+      'eden_perpetrator_field_revision',
+      'eden_victim_field_revision',
+      'eden_violation_field_revision',
+      'eden_sector_field_revision',
+      
+      // Revision tables
+      'eden_incident_revision',
+      'eden_location_revision',
+      'eden_perpetrator_revision',
+      'eden_victim_revision',
+      'eden_violation_revision',
+      'eden_sector_revision',
+      
+      // Field data tables
+      'eden_incident_field_data',
+      'eden_location_field_data',
+      'eden_perpetrator_field_data',
+      'eden_victim_field_data',
+      'eden_violation_field_data',
+      'eden_sector_field_data',
+      
+      // Base tables last
+      'eden_incident',
+      'eden_location',
+      'eden_perpetrator',
+      'eden_victim',
+      'eden_violation',
+      'eden_sector'
+    ];
+
+    // Disable foreign key checks
+    $database->query('SET FOREIGN_KEY_CHECKS = 0');
+
+    // Drop tables if they exist
+    foreach ($uninstall_order as $table) {
+      try {
+        if ($schema->tableExists($table)) {
+          $schema->dropTable($table);
+          $logger->notice('Dropped table @table', ['@table' => $table]);
+        }
+        else {
+          $logger->notice('Table @table does not exist, skipping', ['@table' => $table]);
+        }
+      }
+      catch (\Exception $e) {
+        $logger->warning('Could not drop table @table: @message', [
+          '@table' => $table,
+          '@message' => $e->getMessage()
+        ]);
+      }
+    }
+
+    // Re-enable foreign key checks
+    $database->query('SET FOREIGN_KEY_CHECKS = 1');
+
+    // Clean up configuration
+    try {
+      $config_factory = \Drupal::configFactory();
+      $config_names = [
+        'eden.settings',
+        'views.view.eden_incidents',
+        'views.view.eden_locations',
+        'views.view.eden_perpetrators',
+        'views.view.eden_victims',
+        'views.view.eden_violations',
+        'views.view.eden_sectors'
+      ];
+
+      foreach ($config_names as $config_name) {
+        try {
+          $config_factory->getEditable($config_name)->delete();
+          $logger->notice('Deleted configuration @config', ['@config' => $config_name]);
+        }
+        catch (\Exception $e) {
+          $logger->warning('Could not delete configuration @config: @message', [
+            '@config' => $config_name,
+            '@message' => $e->getMessage()
+          ]);
+        }
+      }
+    }
+    catch (\Exception $e) {
+      $logger->warning('Error cleaning up configuration: @message', ['@message' => $e->getMessage()]);
+    }
+
+    // Clear all caches
+    try {
+      drupal_flush_all_caches();
+      $logger->notice('Cleared all caches');
+    }
+    catch (\Exception $e) {
+      $logger->warning('Error clearing caches: @message', ['@message' => $e->getMessage()]);
+    }
+    
+    $logger->notice('Eden module uninstallation completed');
+  }
+  catch (\Exception $e) {
+    $logger->error('Error during Eden module uninstallation: @message', ['@message' => $e->getMessage()]);
+  }
+}
+
+/**
+ * Update incident location field to use entity reference.
+ */
+function eden_update_9001() {
+  $database = \Drupal::database();
+  $entity_type_manager = \Drupal::entityTypeManager();
+  $location_storage = $entity_type_manager->getStorage('eden_location');
+  $incident_storage = $entity_type_manager->getStorage('eden_incident');
+  
+  // Create a temporary column for the old location data
+  $database->schema()->addField('eden_incident_field_data', 'location_old', [
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => FALSE,
+    'description' => 'Temporary storage for old location data',
+  ]);
+  
+  // Copy existing location data to temporary column
+  $database->query("UPDATE {eden_incident_field_data} SET location_old = location");
+  
+  // Update schema for the location field
+  $database->schema()->changeField('eden_incident_field_data', 'location', 'location', [
+    'type' => 'int',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 0,
+    'description' => 'The ID of the location where the incident occurred.',
+  ]);
+  
+  // Do the same for the revision table
+  $database->schema()->addField('eden_incident_field_revision', 'location_old', [
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => FALSE,
+    'description' => 'Temporary storage for old location data',
+  ]);
+  
+  $database->query("UPDATE {eden_incident_field_revision} SET location_old = location");
+  
+  $database->schema()->changeField('eden_incident_field_revision', 'location', 'location', [
+    'type' => 'int',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 0,
+    'description' => 'The ID of the location where the incident occurred.',
+  ]);
+  
+  // Get all unique locations from the temporary columns
+  $locations = $database->query("SELECT DISTINCT location_old FROM {eden_incident_field_data} WHERE location_old IS NOT NULL")->fetchCol();
+  
+  // Create location entities for each unique location
+  foreach ($locations as $location_name) {
+    // Parse location into town, province, region
+    $parts = array_map('trim', explode(',', $location_name));
+    $town = $parts[0] ?? $location_name;
+    $province = $parts[1] ?? '';
+    $region = $parts[2] ?? '';
+    
+    // Check if a location with this town already exists
+    $existing_locations = $location_storage->loadByProperties(['town' => $town]);
+    if (!empty($existing_locations)) {
+      $location = reset($existing_locations);
+    }
+    else {
+      // Create new location entity
+      $location = $location_storage->create([
+        'town' => $town,
+        'province' => $province,
+        'region' => $region,
+        'status' => 1,
+      ]);
+      $location->save();
+    }
+    
+    // Update all incidents that used this location
+    $database->query(
+      "UPDATE {eden_incident_field_data} SET location = :new_id WHERE location_old = :old_name",
+      [':new_id' => $location->id(), ':old_name' => $location_name]
+    );
+    $database->query(
+      "UPDATE {eden_incident_field_revision} SET location = :new_id WHERE location_old = :old_name",
+      [':new_id' => $location->id(), ':old_name' => $location_name]
+    );
+  }
+  
+  // Remove temporary columns
+  $database->schema()->dropField('eden_incident_field_data', 'location_old');
+  $database->schema()->dropField('eden_incident_field_revision', 'location_old');
+  
+  return t('Successfully updated incident location field to use entity reference.');
+} 
+
+/**
+ * Update victim field constraints to make certain fields optional.
+ */
+function eden_update_9002() {
+  $database = \Drupal::database();
+  $schema = \Drupal::database()->schema();
+  
+  // Fields to make optional in both tables
+  $fields = [
+    'first_name' => [
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+    ],
+    'last_name' => [
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+    ],
+    'gender' => [
+      'type' => 'varchar',
+      'length' => 32,
+      'not null' => FALSE,
+      'default' => 'male',
+    ],
+    'residence' => [
+      'type' => 'text',
+      'not null' => FALSE,
+    ],
+    'location' => [
+      'type' => 'int',
+      'unsigned' => TRUE,
+      'not null' => FALSE,
+    ],
+  ];
+
+  // Update field definitions in both tables
+  $tables = ['eden_victim_field_data', 'eden_victim_field_revision'];
+  foreach ($tables as $table) {
+    foreach ($fields as $field => $spec) {
+      if ($schema->fieldExists($table, $field)) {
+        $schema->changeField($table, $field, $field, $spec);
+      }
+    }
+  }
+
+  return t('Successfully updated victim field constraints to make certain fields optional.');
+}
+
+/**
+ * Add victim_type field to victim tables.
+ */
+function eden_update_9003() {
+  $database = \Drupal::database();
+  $schema = \Drupal::database()->schema();
+  
+  $field_spec = [
+    'type' => 'varchar',
+    'length' => 32,
+    'not null' => TRUE,
+    'default' => 'individual',
+    'description' => 'The type of victim (individual, family, community, group, organization).',
+  ];
+
+  // Add field to both tables
+  $tables = ['eden_victim_field_data', 'eden_victim_field_revision'];
+  foreach ($tables as $table) {
+    if (!$schema->fieldExists($table, 'victim_type')) {
+      $schema->addField($table, 'victim_type', $field_spec);
+    }
+  }
+
+  return t('Successfully added victim_type field to victim tables.');
+}
+
+/**
+ * Add group_name field to victim tables.
+ */
+function eden_update_9004() {
+  $database = \Drupal::database();
+  $schema = \Drupal::database()->schema();
+  
+  $field_spec = [
+    'type' => 'varchar',
+    'length' => 255,
+    'not null' => FALSE,
+    'description' => 'Name of the family/community/group/organization.',
+  ];
+
+  // Add field to both tables
+  $tables = ['eden_victim_field_data', 'eden_victim_field_revision'];
+  foreach ($tables as $table) {
+    if (!$schema->fieldExists($table, 'group_name')) {
+      $schema->addField($table, 'group_name', $field_spec);
+    }
+  }
+
+  return t('Successfully added group_name field to victim tables.');
+}
+
+/**
+ * Add new boolean fields to incident tables.
+ */
+function eden_update_9005() {
+  $database = \Drupal::database();
+  $schema = $database->schema();
+  
+  $fields = [
+    'involving_children' => [
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+      'description' => 'Whether the incident involves children.',
+    ],
+    'mining_related' => [
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+      'description' => 'Whether the incident is mining-related.',
+    ],
+    'agrarian_related' => [
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+      'description' => 'Whether the incident is agrarian-related.',
+    ],
+    'demolition_related' => [
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+      'description' => 'Whether the incident is demolition-related.',
+    ],
+    'unspecified_date' => [
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+      'description' => 'Whether the incident date is unspecified.',
+    ],
+    'incident_continuing' => [
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+      'description' => 'Whether the incident is ongoing.',
+    ],
+  ];
+
+  $tables = ['eden_incident_field_data', 'eden_incident_field_revision'];
+  
+  foreach ($tables as $table) {
+    foreach ($fields as $field_name => $field_spec) {
+      if (!$schema->fieldExists($table, $field_name)) {
+        $schema->addField($table, $field_name, $field_spec);
+      }
+    }
+  }
+
+  return t('Successfully added new boolean fields to incident tables.');
+}
+
+/**
+ * Add children_below_18 field to victim entity.
+ */
+function eden_update_9006() {
+  $spec = [
+    'type' => 'int',
+    'not null' => FALSE,
+    'description' => 'The number of children below 18 years old.',
+    'default' => 0,
+  ];
+
+  $schema = \Drupal::database()->schema();
+  $schema->addField('eden_victim_field_data', 'children_below_18', $spec);
+  $schema->addField('eden_victim_field_revision', 'children_below_18', $spec);
+
+  return t('Added children_below_18 field to victim entity.');
+}
+
+/**
+ * Add schema for perpetrator entity tables.
+ */
+function eden_update_11001() {
+  $schema = \Drupal::database()->schema();
+
+  // Update perpetrator field data table
+  if ($schema->tableExists('eden_perpetrator_field_data')) {
+    // Add new fields to field data table
+    if (!$schema->fieldExists('eden_perpetrator_field_data', 'unit')) {
+      $schema->addField('eden_perpetrator_field_data', 'unit', [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ]);
+    }
+    if (!$schema->fieldExists('eden_perpetrator_field_data', 'location')) {
+      $schema->addField('eden_perpetrator_field_data', 'location', [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ]);
+    }
+  }
+
+  // Update perpetrator field revision table
+  if ($schema->tableExists('eden_perpetrator_field_revision')) {
+    // Add new fields to revision table
+    if (!$schema->fieldExists('eden_perpetrator_field_revision', 'unit')) {
+      $schema->addField('eden_perpetrator_field_revision', 'unit', [
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+      ]);
+    }
+    if (!$schema->fieldExists('eden_perpetrator_field_revision', 'location')) {
+      $schema->addField('eden_perpetrator_field_revision', 'location', [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => FALSE,
+      ]);
+    }
+  }
+}
+
+/**
+ * Add detention fields to incident victim table.
+ */
+function eden_update_9007() {
+  $schema = \Drupal::database()->schema();
+  $message = [];
+  
+  $fields = [
+    'date_of_detention' => [
+      'type' => 'varchar',
+      'mysql_type' => 'date',
+      'not null' => FALSE,
+      'description' => 'The date when the victim was detained.',
+    ],
+    'place_of_arrest' => [
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+      'description' => 'The place where the victim was arrested.',
+    ],
+    'place_of_detention' => [
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+      'description' => 'The place where the victim is/was detained.',
+    ],
+    'charges' => [
+      'type' => 'text',
+      'size' => 'big',
+      'not null' => FALSE,
+      'description' => 'The charges filed against the victim.',
+    ],
+    'already_released' => [
+      'type' => 'int',
+      'size' => 'tiny',
+      'not null' => TRUE,
+      'default' => 0,
+      'description' => 'Whether the victim has been released from detention.',
+    ],
+    'remarks_on_release' => [
+      'type' => 'text',
+      'size' => 'big',
+      'not null' => FALSE,
+      'description' => 'Remarks regarding the release of the victim.',
+    ],
+  ];
+
+  try {
+    // Add fields to eden_incident_victim table
+    foreach ($fields as $field_name => $field_spec) {
+      if (!$schema->fieldExists('eden_incident_victim', $field_name)) {
+        $schema->addField('eden_incident_victim', $field_name, $field_spec);
+        $message[] = t('Added field @field', ['@field' => $field_name]);
+      }
+    }
+    
+    if (empty($message)) {
+      $message[] = t('All detention fields already exist.');
+    }
+    
+    return implode(' ', $message);
+  }
+  catch (\Exception $e) {
+    \Drupal::logger('eden')->error('Error adding detention fields: @error', ['@error' => $e->getMessage()]);
+    throw new \Exception('Failed to add detention fields. Check the logs for details.');
+  }
+}

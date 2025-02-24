@@ -1,0 +1,185 @@
+eden.incident_settings:
+  path: '/admin/structure/eden/incident/settings'
+  defaults:
+    _form: '\Drupal\eden\Form\IncidentSettingsForm'
+    _title: 'Incident Settings'
+  requirements:
+    _permission: 'administer eden'
+
+eden.victim_settings:
+  path: '/admin/structure/eden/victim/settings'
+  defaults:
+    _form: '\Drupal\eden\Form\VictimSettingsForm'
+    _title: 'Victim Settings'
+  requirements:
+    _permission: 'administer eden'
+
+eden.violation_settings:
+  path: '/admin/structure/eden/violation/settings'
+  defaults:
+    _form: '\Drupal\eden\Form\ViolationSettingsForm'
+    _title: 'Violation Settings'
+  requirements:
+    _permission: 'administer eden'
+
+eden.sector_settings:
+  path: '/admin/structure/eden/sector/settings'
+  defaults:
+    _form: '\Drupal\eden\Form\SectorSettingsForm'
+    _title: 'Sector Settings'
+  requirements:
+    _permission: 'administer eden'
+
+eden.perpetrator_settings:
+  path: '/admin/structure/eden/perpetrator/settings'
+  defaults:
+    _form: '\Drupal\eden\Form\PerpetratorSettingsForm'
+    _title: 'Perpetrator Settings'
+  requirements:
+    _permission: 'administer eden'
+
+eden.admin:
+  path: '/admin/content/eden'
+  defaults:
+    _controller: '\Drupal\eden\Controller\EdenAdminController::overview'
+    _title: 'Eden'
+  requirements:
+    _permission: 'access eden content'
+
+eden.incident.add:
+  path: '/admin/content/eden/incident/add'
+  defaults:
+    _entity_form: 'eden_incident.add'
+    _title: 'Add incident'
+  requirements:
+    _entity_create_access: 'eden_incident'
+
+eden.victim.add:
+  path: '/admin/content/eden/victim/add'
+  defaults:
+    _entity_form: 'eden_victim.add'
+    _title: 'Add victim'
+  requirements:
+    _entity_create_access: 'eden_victim'
+
+eden.violation.add:
+  path: '/admin/content/eden/violation/add'
+  defaults:
+    _entity_form: 'eden_violation.add'
+    _title: 'Add violation'
+  requirements:
+    _entity_create_access: 'eden_violation'
+
+eden.sector.add:
+  path: '/admin/content/eden/sector/add'
+  defaults:
+    _entity_form: 'eden_sector.add'
+    _title: 'Add sector'
+  requirements:
+    _entity_create_access: 'eden_sector'
+
+eden.perpetrator.add:
+  path: '/admin/content/eden/perpetrator/add'
+  defaults:
+    _entity_form: 'eden_perpetrator.add'
+    _title: 'Add perpetrator'
+  requirements:
+    _entity_create_access: 'eden_perpetrator'
+
+entity.eden_incident.add_victim:
+  path: '/admin/content/eden/incident/{eden_incident}/victims'
+  defaults:
+    _form: '\Drupal\eden\Form\IncidentVictimForm'
+    _title: 'Manage Victims and Violations'
+  requirements:
+    _permission: 'administer eden'
+  options:
+    parameters:
+      eden_incident:
+        type: entity:eden_incident
+
+entity.eden_incident.add_perpetrator:
+  path: '/admin/content/eden/incident/{eden_incident}/perpetrators'
+  defaults:
+    _form: '\Drupal\eden\Form\IncidentPerpetratorForm'
+    _title: 'Manage Perpetrators'
+  requirements:
+    _permission: 'administer eden'
+  options:
+    parameters:
+      eden_incident:
+        type: entity:eden_incident
+
+entity.eden_incident.remove_violation:
+  path: '/admin/content/eden/incident/{eden_incident}/victim/{victim}/violation/{violation}/remove'
+  defaults:
+    _controller: '\Drupal\eden\Controller\EdenIncidentController::removeViolation'
+    _title: 'Remove Violation'
+  requirements:
+    _permission: 'administer eden incidents'
+  options:
+    parameters:
+      eden_incident:
+        type: entity:eden_incident
+      victim:
+        type: entity:eden_victim
+      violation:
+        type: entity:eden_violation
+
+entity.eden_incident.remove_perpetrator:
+  path: '/admin/content/eden/incident/{eden_incident}/perpetrator/{perpetrator}/remove'
+  defaults:
+    _controller: '\Drupal\eden\Controller\EdenIncidentController::removePerpetrator'
+    _title: 'Remove Perpetrator'
+  requirements:
+    _permission: 'administer eden incidents'
+  options:
+    parameters:
+      eden_incident:
+        type: entity:eden_incident
+      perpetrator:
+        type: entity:eden_perpetrator 
+
+entity.eden_incident.remove_victim:
+  path: '/admin/content/eden/incident/{eden_incident}/victim/{victim}/remove'
+  defaults:
+    _controller: '\Drupal\eden\Controller\EdenIncidentController::removeVictim'
+    _title: 'Remove Victim'
+  requirements:
+    _permission: 'administer eden incidents'
+  options:
+    parameters:
+      eden_incident:
+        type: entity:eden_incident
+      victim:
+        type: entity:eden_victim
+
+eden.location_settings:
+  path: '/admin/structure/eden/location/settings'
+  defaults:
+    _form: '\Drupal\eden\Form\LocationSettingsForm'
+    _title: 'Location Settings'
+  requirements:
+    _permission: 'administer eden'
+
+eden.location.add:
+  path: '/admin/content/eden/location/add'
+  defaults:
+    _entity_form: 'eden_location.add'
+    _title: 'Add location'
+  requirements:
+    _entity_create_access: 'eden_location'
+
+eden.incident_victim_detention_edit:
+  path: '/admin/content/eden/incident/{eden_incident}/victim/{victim}/detention/edit'
+  defaults:
+    _form: '\Drupal\eden\Form\IncidentVictimDetentionForm'
+    _title: 'Edit Detention Details'
+  requirements:
+    _permission: 'administer eden incidents'
+  options:
+    parameters:
+      eden_incident:
+        type: entity:eden_incident
+      victim:
+        type: entity:eden_victim 

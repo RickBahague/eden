@@ -1,0 +1,144 @@
+/**
+ * Styles for the incident entity view display.
+ */
+.eden-incident {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.incident-header {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 1.5rem;
+}
+
+.incident-title {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 0 0 1rem;
+}
+
+.incident-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  color: #666;
+}
+
+.case-number {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #3498db;
+}
+
+.dates {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.incident-date,
+.filing-date {
+  display: flex;
+  flex-direction: column;
+}
+
+.incident-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 1rem;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.incident-details {
+  margin: 2rem 0;
+}
+
+.incident-details h2 {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin: 0 0 1rem;
+}
+
+.account {
+  line-height: 1.6;
+  color: #333;
+}
+
+.incident-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.timestamps {
+  display: flex;
+  gap: 2rem;
+}
+
+/* Field labels */
+.field__label {
+  font-weight: 600;
+  color: #666;
+  margin-right: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .eden-incident {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .incident-meta {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .dates {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .incident-stats {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+} 
+
+.incident-title .field__label, .account .field__label {
+    display: none ;
+}
+

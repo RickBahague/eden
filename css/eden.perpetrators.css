@@ -1,0 +1,229 @@
+/* Perpetrator section styling */
+.perpetrator-info {
+  margin-bottom: 2em;
+  padding: 1.5em;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.perpetrator-info .form-item {
+  margin-bottom: 0.75em;
+  color: #333333;
+  line-height: 1.6;
+}
+
+/* Group name styling */
+.perpetrator-info .form-item-group {
+  font-size: 1.4em;
+  font-weight: 600;
+  color: #222222;
+  margin-bottom: 1em;
+  padding-bottom: 0.5em;
+  border-bottom: 2px solid #e6e6e6;
+}
+
+/* Commanding officer info */
+.perpetrator-info .form-item-co {
+  background: #f8f9fa;
+  padding: 0.8em;
+  border-radius: 4px;
+  margin: 1em 0;
+  font-weight: 500;
+}
+
+/* Brief info section */
+.perpetrator-info .form-item-brief-info {
+  margin-top: 1.2em;
+  padding: 1em;
+  background: #f5f5f5;
+  border-radius: 4px;
+  line-height: 1.5;
+}
+
+/* Involvement description */
+.perpetrator-info .form-item-involvement {
+  margin-top: 1.2em;
+  padding: 1em;
+  background: #fff8dc;
+  border-left: 4px solid #ffd700;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Remarks section */
+.perpetrator-info .form-item-remarks {
+  margin-top: 1.2em;
+  padding: 1em;
+  background: #f8f8f8;
+  border-radius: 4px;
+  font-style: italic;
+  color: #666666;
+}
+
+/* Operations section */
+.perpetrator-operations {
+  margin: 1.5em 0;
+  padding: 1em 0;
+  border-top: 1px solid #e6e6e6;
+  display: flex;
+  gap: 1em;
+}
+
+.perpetrator-operations .button {
+  padding: 0.6em 1.2em;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.perpetrator-operations .button--small {
+  font-size: 0.9em;
+}
+
+.perpetrator-operations .button:not(.button--danger) {
+  background: #0074bd;
+  color: white;
+}
+
+.perpetrator-operations .button:not(.button--danger):hover {
+  background: #005c94;
+}
+
+.perpetrator-operations .button--danger {
+  background: #dc3545;
+  color: white;
+}
+
+.perpetrator-operations .button--danger:hover {
+  background: #bd2130;
+}
+
+/* Add new section styling */
+details.add-new {
+  margin-top: 2em;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+details.add-new > summary {
+  padding: 1em;
+  background: #f5f6f7;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+details.add-new .details-wrapper {
+  padding: 1.5em;
+}
+
+/* Form elements styling */
+.form-item {
+  margin-bottom: 1.5em;
+}
+
+.form-item label {
+  font-weight: 600;
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+.form-item input[type="text"],
+.form-item textarea {
+  width: 100%;
+  padding: 0.8em;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+.form-item input[type="text"]:focus,
+.form-item textarea:focus {
+  border-color: #0074bd;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 116, 189, 0.1);
+}
+
+/* Submit button styling */
+.form-actions {
+  margin-top: 2em;
+  padding-top: 1.5em;
+  border-top: 1px solid #e0e0e0;
+}
+
+.form-actions .button {
+  padding: 0.8em 1.6em;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.form-actions .button:hover {
+  background: #218838;
+}
+
+.perpetrator-details {
+  margin-bottom: 2em;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 1em;
+}
+
+.perpetrator-header {
+  display: flex;
+  gap: 2em;
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid #eee;
+}
+
+.perpetrator-group,
+.perpetrator-unit {
+  flex: 1;
+}
+
+.perpetrator-details-content {
+  display: grid;
+  gap: 1em;
+}
+
+.perpetrator-co,
+.perpetrator-location {
+  margin-bottom: 0.5em;
+}
+
+.perpetrator-brief-info,
+.perpetrator-remarks,
+.perpetrator-involvement {
+  margin-top: 1em;
+  padding: 1em;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+}
+
+.perpetrator-operations {
+  margin-top: 1.5em;
+  display: flex;
+  gap: 1em;
+}
+
+.button--danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.button--danger:hover {
+  background-color: #c82333;
+  color: white;
+}
+
+.button--small {
+  padding: 0.25em 0.5em;
+  font-size: 0.875em;
+} 

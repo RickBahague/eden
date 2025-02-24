@@ -1,0 +1,90 @@
+eden.admin:
+  title: 'Eden'
+  description: 'Manage incidents, victims, and violations.'
+  parent: system.admin_content
+  route_name: eden.admin
+  weight: 100
+
+entity.eden_incident.collection:
+  title: 'Incidents'
+  description: 'List of all incidents.'
+  parent: eden.admin
+  route_name: entity.eden_incident.collection
+  weight: 1
+
+entity.eden_victim.collection:
+  title: 'Victims'
+  description: 'List of all victims.'
+  parent: eden.admin
+  route_name: entity.eden_victim.collection
+  weight: 2
+
+entity.eden_violation.collection:
+  title: 'Violations'
+  description: 'List of all violations.'
+  parent: eden.admin
+  route_name: entity.eden_violation.collection
+  weight: 3
+
+entity.eden_sector.collection:
+  title: 'Sectors'
+  description: 'List of all sectors.'
+  parent: eden.admin
+  route_name: entity.eden_sector.collection
+  weight: 4
+
+entity.eden_perpetrator.collection:
+  title: 'Perpetrators'
+  description: 'List of all perpetrators.'
+  parent: eden.admin
+  route_name: entity.eden_perpetrator.collection
+  weight: 5
+
+entity.eden_location.collection:
+  title: 'Locations'
+  description: 'List of all locations.'
+  parent: eden.admin
+  route_name: entity.eden_location.collection
+  weight: 6
+
+eden.incident.add:
+  title: 'Add incident'
+  description: 'Create a new incident.'
+  parent: entity.eden_incident.collection
+  route_name: entity.eden_incident.add_form
+  weight: 1
+
+eden.victim.add:
+  title: 'Add victim'
+  description: 'Create a new victim record.'
+  parent: entity.eden_victim.collection
+  route_name: entity.eden_victim.add_form
+  weight: 2
+
+eden.violation.add:
+  title: 'Add violation'
+  description: 'Create a new violation record.'
+  parent: entity.eden_violation.collection
+  route_name: entity.eden_violation.add_form
+  weight: 3
+
+eden.sector.add:
+  title: 'Add sector'
+  description: 'Create a new sector.'
+  parent: entity.eden_sector.collection
+  route_name: entity.eden_sector.add_form
+  weight: 4
+
+eden.perpetrator.add:
+  title: 'Add perpetrator'
+  description: 'Create a new perpetrator.'
+  parent: entity.eden_perpetrator.collection
+  route_name: entity.eden_perpetrator.add_form
+  weight: 5
+
+eden.location.add:
+  title: 'Add location'
+  description: 'Create a new location.'
+  parent: entity.eden_location.collection
+  route_name: entity.eden_location.add_form
+  weight: 6 
