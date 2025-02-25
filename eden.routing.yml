@@ -214,4 +214,26 @@ eden.home:
     _title: 'Eden Human Rights Violation Monitoring System'
     _controller: '\Drupal\eden\Controller\EdenHomeController::content'
   requirements:
-    _permission: 'access eden content' 
+    _permission: 'access eden content'
+
+eden.search:
+  path: '/eden/search'
+  defaults:
+    _title: 'Search Eden'
+    _controller: '\Drupal\eden\Controller\EdenSearchController::view'
+  requirements:
+    _permission: 'access eden content'
+  options:
+    _admin_route: FALSE
+
+eden.search.help:
+  path: '/eden/search/help'
+  defaults:
+    _title: 'Search help'
+    _controller: '\Drupal\eden\Controller\EdenSearchController::help'
+  requirements:
+    _permission: 'access eden content'
+  options:
+    parameters:
+      entity:
+        type: entity:search_page 

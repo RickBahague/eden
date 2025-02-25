@@ -87,4 +87,11 @@ eden.location.add:
   description: 'Create a new location.'
   parent: entity.eden_location.collection
   route_name: entity.eden_location.add_form
-  weight: 6 
+  weight: 6
+
+eden.search:
+  title: 'Search'
+  description: 'Search Eden entities'
+  route_name: eden.search
+  menu_name: main
+  weight: 10 

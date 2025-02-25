@@ -1,0 +1,11 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - eden
+    - search
+id: eden_search
+label: 'Eden Search'
+path: eden
+plugin: eden_search
+configuration: { } 
