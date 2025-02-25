@@ -2973,6 +2973,144 @@ function eden_schema() {
     ],
   ];
 
+  // Incident Case Update table
+  $schema['eden_incident_case_update'] = [
+    'description' => 'The base table for storing incident case updates.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique case update ID.',
+      ],
+      'uuid' => [
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'description' => 'Unique identifier for this entity.',
+      ],
+      'incident_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The incident entity ID this update belongs to.',
+      ],
+      'langcode' => [
+        'type' => 'varchar',
+        'length' => 12,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'The language code for this data item.',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the case update was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the case update was last updated.',
+      ],
+      'uid' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The ID of the user who created the case update.',
+      ],
+      'status' => [
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+        'description' => 'Boolean indicating whether the case update is published.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'uuid' => ['uuid'],
+    ],
+    'indexes' => [
+      'incident_id' => ['incident_id'],
+      'uid' => ['uid'],
+    ],
+    'foreign keys' => [
+      'incident' => [
+        'table' => 'eden_incident',
+        'columns' => ['incident_id' => 'id'],
+      ],
+      'owner' => [
+        'table' => 'users',
+        'columns' => ['uid' => 'uid'],
+      ],
+    ],
+  ];
+
+  // Incident Case Update Document table
+  $schema['eden_incident_case_update_document'] = [
+    'description' => 'The table for storing incident case update documents.',
+    'fields' => [
+      'id' => [
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Primary Key: Unique document ID.',
+      ],
+      'case_update_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The case update entity ID this document belongs to.',
+      ],
+      'file_id' => [
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => 'The file entity ID.',
+      ],
+      'description' => [
+        'type' => 'text',
+        'size' => 'big',
+        'not null' => FALSE,
+        'description' => 'Description of the document.',
+      ],
+      'file_date' => [
+        'type' => 'varchar',
+        'length' => 10,
+        'not null' => FALSE,
+        'description' => 'The date of the file (YYYY-MM-DD).',
+      ],
+      'created' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the document was created.',
+      ],
+      'changed' => [
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => 'The Unix timestamp when the document was last updated.',
+      ],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'case_update_id' => ['case_update_id'],
+      'file_id' => ['file_id'],
+    ],
+    'foreign keys' => [
+      'case_update' => [
+        'table' => 'eden_incident_case_update',
+        'columns' => ['case_update_id' => 'id'],
+      ],
+      'file' => [
+        'table' => 'file_managed',
+        'columns' => ['file_id' => 'fid'],
+      ],
+    ],
+  ];
+
   return $schema;
 }
 
@@ -3024,7 +3162,9 @@ function eden_install() {
       'eden_incident_perpetrator',
       'eden_incident_victim',
       'eden_incident_victim_violation',
-      'eden_victim_location'
+      'eden_victim_location',
+      'eden_incident_case_update',
+      'eden_incident_case_update_document'
     ];
 
     // Disable foreign key checks
@@ -3085,6 +3225,8 @@ function eden_uninstall() {
       'eden_incident_victim',
       'eden_incident_victim_violation',
       'eden_victim_location',
+      'eden_incident_case_update',
+      'eden_incident_case_update_document',
       
       // Revision field data tables
       'eden_incident_field_revision',

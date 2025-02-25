@@ -182,4 +182,28 @@ eden.incident_victim_detention_edit:
       eden_incident:
         type: entity:eden_incident
       victim:
-        type: entity:eden_victim 
+        type: entity:eden_victim
+
+entity.eden_incident.case_updates:
+  path: '/admin/content/eden/incident/{eden_incident}/case-updates'
+  defaults:
+    _title: 'Case Updates'
+    _controller: '\Drupal\eden\Controller\CaseUpdateController::overview'
+  requirements:
+    _permission: 'administer eden'
+  options:
+    parameters:
+      eden_incident:
+        type: entity:eden_incident
+
+entity.eden_incident.add_case_update:
+  path: '/admin/content/eden/incident/{eden_incident}/case-updates/add'
+  defaults:
+    _title: 'Add Case Update'
+    _form: '\Drupal\eden\Form\IncidentCaseUpdateForm'
+  requirements:
+    _permission: 'administer eden'
+  options:
+    parameters:
+      eden_incident:
+        type: entity:eden_incident 

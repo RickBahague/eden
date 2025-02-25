@@ -1,0 +1,93 @@
+/* Case Update form styling */
+.document-fieldset {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+}
+
+.document-fieldset .form-item {
+  margin-bottom: 1rem;
+}
+
+.document-fieldset .form-managed-file {
+  margin-bottom: 1.5rem;
+}
+
+.document-fieldset .file-upload-help {
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+/* Add/Remove document buttons */
+#documents-fieldset-wrapper .button {
+  margin-right: 1rem;
+}
+
+#documents-fieldset-wrapper .button--add-document {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+#documents-fieldset-wrapper .button--add-document:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+#documents-fieldset-wrapper .button--remove-document {
+  background-color: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+
+#documents-fieldset-wrapper .button--remove-document:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+
+/* Case number display */
+.form-item--case-number {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #dee2e6;
+}
+
+/* Submit button */
+.form-actions {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #dee2e6;
+}
+
+.form-actions .button--primary {
+  padding: 0.5rem 1.5rem;
+  font-weight: 500;
+}
+
+/* File upload widget */
+.form-managed-file {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.form-managed-file .file {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: #e9ecef;
+  border-radius: 4px;
+}
+
+/* Date field */
+.form-type-date {
+  max-width: 200px;
+}
+
+/* Description textarea */
+.form-textarea-wrapper textarea {
+  min-height: 100px;
+} 

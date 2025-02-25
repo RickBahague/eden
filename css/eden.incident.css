@@ -138,7 +138,7 @@
   }
 } 
 
-.incident-title .field__label, .account .field__label {
+.incident-title .field__label, .account .field__label, .page-title .field__label {
     display: none ;
 }
 

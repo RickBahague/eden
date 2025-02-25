@@ -81,4 +81,10 @@ entity.eden_location.delete_form:
   route_name: entity.eden_location.delete_form
   base_route: entity.eden_location.canonical
   title: 'Delete'
-  weight: 10 
+  weight: 10
+
+entity.eden_incident.case_updates:
+  route_name: entity.eden_incident.case_updates
+  base_route: entity.eden_incident.canonical
+  title: 'Case Updates'
+  weight: 7 
