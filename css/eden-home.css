@@ -1,0 +1,80 @@
+.eden-header {
+  margin: 2em 0;
+  padding: 2em;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.eden-header h1 {
+  margin: 0 0 0.5em;
+  color: #333;
+}
+
+.eden-stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 2em 0;
+  padding: 1em;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.eden-stat-item {
+  text-align: center;
+  padding: 1em;
+}
+
+.eden-stat-count {
+  font-size: 2em;
+  font-weight: bold;
+  color: #0071b8;
+  margin-bottom: 0.25em;
+}
+
+.eden-stat-label {
+  color: #666;
+  text-decoration: none;
+}
+
+.eden-recent-incidents {
+  margin: 2em 0;
+  padding: 1em;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.eden-recent-incidents h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.eden-incident-item {
+  margin: 0.5em 0;
+  padding: 0.5em;
+  border-bottom: 1px solid #eee;
+}
+
+.eden-incident-item:last-child {
+  border-bottom: none;
+}
+
+.eden-actions {
+  margin: 2em 0;
+  padding: 1em;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.eden-actions h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.eden-actions .button {
+  margin: 0.5em;
+  display: inline-block;
+} 

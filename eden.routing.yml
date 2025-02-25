@@ -206,4 +206,12 @@ entity.eden_incident.add_case_update:
   options:
     parameters:
       eden_incident:
-        type: entity:eden_incident 
+        type: entity:eden_incident
+
+eden.home:
+  path: '/eden'
+  defaults:
+    _title: 'Eden Human Rights Violation Monitoring System'
+    _controller: '\Drupal\eden\Controller\EdenHomeController::content'
+  requirements:
+    _permission: 'access eden content' 
