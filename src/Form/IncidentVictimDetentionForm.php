@@ -247,9 +247,13 @@ class IncidentVictimDetentionForm extends FormBase {
 
     // Update the detention information
     try {
+      // Get the date value and convert empty string to NULL
+      $date_of_detention = $form_state->getValue(['detention_details', 'date_of_detention']);
+      $date_of_detention = !empty($date_of_detention) ? $date_of_detention : NULL;
+
       $this->database->update('eden_incident_victim')
         ->fields([
-          'date_of_detention' => $form_state->getValue(['detention_details', 'date_of_detention']),
+          'date_of_detention' => $date_of_detention,
           'place_of_arrest' => $form_state->getValue(['detention_details', 'place_of_arrest']),
           'place_of_detention' => $form_state->getValue(['detention_details', 'place_of_detention']),
           'charges' => $form_state->getValue(['detention_details', 'charges']),
