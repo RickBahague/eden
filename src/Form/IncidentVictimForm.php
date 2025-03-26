@@ -613,12 +613,16 @@ class IncidentVictimForm extends FormBase {
         ->fetchField();
 
       if (!$incident_victim_id) {
+        // Get the date value and convert empty string to NULL
+        $date_of_detention = $form_state->getValue(['add_new', 'detention_container', 'date_of_detention']);
+        $date_of_detention = !empty($date_of_detention) ? $date_of_detention : NULL;
+
         // Insert new relationship
         $incident_victim_id = $this->database->insert('eden_incident_victim')
           ->fields([
             'incident_id' => $incident_id,
             'victim_id' => $victim_id,
-            'date_of_detention' => $form_state->getValue(['add_new', 'detention_container', 'date_of_detention']),
+            'date_of_detention' => $date_of_detention,
             'place_of_arrest' => $form_state->getValue(['add_new', 'detention_container', 'place_of_arrest']),
             'place_of_detention' => $form_state->getValue(['add_new', 'detention_container', 'place_of_detention']),
             'charges' => $form_state->getValue(['add_new', 'detention_container', 'charges']),
@@ -632,10 +636,14 @@ class IncidentVictimForm extends FormBase {
           ->execute();
       }
       else {
+        // Get the date value and convert empty string to NULL
+        $date_of_detention = $form_state->getValue(['add_new', 'detention_container', 'date_of_detention']);
+        $date_of_detention = !empty($date_of_detention) ? $date_of_detention : NULL;
+
         // Update existing relationship
         $this->database->update('eden_incident_victim')
           ->fields([
-            'date_of_detention' => $form_state->getValue(['add_new', 'detention_container', 'date_of_detention']),
+            'date_of_detention' => $date_of_detention,
             'place_of_arrest' => $form_state->getValue(['add_new', 'detention_container', 'place_of_arrest']),
             'place_of_detention' => $form_state->getValue(['add_new', 'detention_container', 'place_of_detention']),
             'charges' => $form_state->getValue(['add_new', 'detention_container', 'charges']),
